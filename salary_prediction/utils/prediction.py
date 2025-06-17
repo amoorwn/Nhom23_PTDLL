@@ -42,7 +42,7 @@ def train_model():
 
     # Khởi tạo và huấn luyện mô hình Logistic Regression
     model = LogisticRegression(
-        solver='liblinear',
+        solver='saga',
         max_iter=1000,
         random_state=42,
         class_weight='balanced'
