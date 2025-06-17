@@ -1,0 +1,88 @@
+{% extends 'salary_prediction/base.html' %}
+
+{% block title %}Giới thiệu - Dự đoán mức lương{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3 class="mb-0"><i class="fas fa-info-circle"></i> Giới thiệu dự án</h3>
+            </div>
+            <div class="card-body">
+                <h4>Phân tích và dự đoán mức lương bằng mô hình hồi quy logistic</h4>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-bullseye"></i> Mục tiêu dự án</h5>
+                    <p>
+                        Xây dựng một ứng dụng web cho phép người dùng nhập thông tin cá nhân và dự đoán xác suất 
+                        thu nhập trên 50,000 USD/năm dựa trên mô hình hồi quy logistic.
+                    </p>
+                </div>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-database"></i> Dữ liệu sử dụng</h5>
+                    <p>
+                        <strong>Adult Income Dataset</strong> từ Kaggle - Bộ dữ liệu điều tra dân số Hoa Kỳ năm 1994, 
+                        chứa thông tin về 48,842 cá nhân với các đặc trưng:
+                    </p>
+                    <ul>
+                        <li>Tuổi, giới tính, chủng tộc</li>
+                        <li>Trình độ học vấn</li>
+                        <li>Nghề nghiệp, lớp công việc</li>
+                        <li>Tình trạng hôn nhân, mối quan hệ</li>
+                        <li>Số giờ làm việc mỗi tuần</li>
+                        <li>Thu nhập/lỗ từ vốn</li>
+                        <li>Quốc gia xuất xứ</li>
+                    </ul>
+                </div>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-cogs"></i> Quy trình xử lý</h5>
+                    <ol>
+                        <li><strong>Tiền xử lý dữ liệu:</strong> Loại bỏ dữ liệu thiếu, xử lý ngoại lai, chuẩn hóa</li>
+                        <li><strong>Phân tích mô tả:</strong> Khám phá phân phối và mối quan hệ giữa các biến</li>
+                        <li><strong>Xây dựng mô hình:</strong> Huấn luyện mô hình hồi quy logistic</li>
+                        <li><strong>Đánh giá:</strong> Kiểm tra độ chính xác và hiệu suất mô hình</li>
+                        <li><strong>Triển khai:</strong> Tích hợp vào ứng dụng web Django</li>
+                    </ol>
+                </div>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-chart-line"></i> Kết quả mô hình</h5>
+                    <p>
+                        Mô hình hồi quy logistic đã được huấn luyện với độ chính xác cao, có khả năng dự đoán 
+                        xác suất thu nhập dựa trên các đặc trưng đầu vào của người dùng.
+                    </p>
+                </div>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-code"></i> Công nghệ sử dụng</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Backend:</strong> Python, Django</li>
+                                <li><strong>Machine Learning:</strong> Scikit-learn</li>
+                                <li><strong>Data Processing:</strong> Pandas, NumPy</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Frontend:</strong> HTML, CSS, Bootstrap</li>
+                                <li><strong>Visualization:</strong> Matplotlib, Seaborn</li>
+                                <li><strong>Database:</strong> SQLite</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <a href="{% url 'index' %}" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i> Thử dự đoán ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends 'salary_prediction/base.html' %}
+
+{% block title %}Dự đoán mức lương - Trang chủ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3 class="mb-0"><i class="fas fa-calculator"></i> Dự đoán mức lương</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-center text-muted mb-4">
+                    Nhập thông tin cá nhân để dự đoán xác suất thu nhập trên 50,000 USD/năm
+                </p>
+                
+                {% if error_message %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> {{ error_message }}
+                </div>
+                {% endif %}
+                
+                <form method="post" id="prediction-form">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Cột trái -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.age.label_tag }}
+                                {{ form.age }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.workclass.label_tag }}
+                                {{ form.workclass }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.education.label_tag }}
+                                {{ form.education }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.marital_status.label_tag }}
+                                {{ form.marital_status }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.occupation.label_tag }}
+                                {{ form.occupation }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.relationship.label_tag }}
+                                {{ form.relationship }}
+                            </div>
+                        </div>
+                        
+                        <!-- Cột phải -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.race.label_tag }}
+                                {{ form.race }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.gender.label_tag }}
+                                <div>
+                                    {% for radio in form.gender %}
+                                    <div class="form-check form-check-inline">
+                                        {{ radio.tag }}
+                                        <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                            {{ radio.choice_label }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.capital_gain.label_tag }}
+                                {{ form.capital_gain }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.capital_loss.label_tag }}
+                                {{ form.capital_loss }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.hours_per_week.label_tag }}
+                                {{ form.hours_per_week }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.native_country.label_tag }}
+                                {{ form.native_country }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-chart-line"></i> Dự đoán
+                        </button>
+                        <button type="reset" class="btn btn-secondary btn-lg ms-2">
+                            <i class="fas fa-redo"></i> Làm mới
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Kết quả dự đoán -->
+        {% if show_result %}
+        <div class="result-card {% if result.prediction %}result-success{% else %}result-danger{% endif %} animate__animated animate__fadeIn">
+            <h4 class="text-center mb-3">
+                <i class="fas fa-poll"></i> Kết quả dự đoán
+            </h4>
+            
+            <div class="text-center">
+                <h2 class="mb-3">
+                    {% if result.prediction %}
+                        <i class="fas fa-check-circle text-success"></i> Thu nhập > 50,000 USD/năm
+                    {% else %}
+                        <i class="fas fa-times-circle text-danger"></i> Thu nhập ≤ 50,000 USD/năm
+                    {% endif %}
+                </h2>
+                
+                <!-- Comment: Thanh tiến trình tùy chỉnh -->
+                <!-- <div class="custom-progress" style="margin: 20px 0;">
+                    <div class="custom-progress-bar" 
+                         id="progress-bar"
+                         style="width: {{ result.probability_percent }}%; 
+                                background-color: {% if result.probability_percent >= 70 %}#28a745{% elif result.probability_percent >= 40 %}#ffc107{% else %}#dc3545{% endif %};">
+                    </div>
+                    <div class="progress-text" id="progress-text">{{ result.probability_percent }}%</div>
+                </div> -->
+                
+                
+                <!-- Comment: Thang đo -->
+                <!-- <div class="progress-scale">
+                    <span>0%</span>
+                    <span>25%</span>
+                    <span>50%</span>
+                    <span>75%</span>
+                    <span>100%</span>
+                </div> -->
+                
+                <!-- Comment: Giải thích màu sắc -->
+                <!-- <div class="progress-legend">
+                    <strong>Giải thích:</strong><br>
+                    <span style="color: #dc3545;">■</span> Thấp (0-39%): Ít khả năng thu nhập > 50K |
+                    <span style="color: #ffc107;">■</span> Trung bình (40-69%): Có thể thu nhập > 50K |
+                    <span style="color: #28a745;">■</span> Cao (70-100%): Rất có thể thu nhập > 50K
+                </div> -->
+                
+                <p class="mt-3 mb-0 text-center" style="color: {% if result.probability_percent >= 70 %}#28a745{% elif result.probability_percent >= 40 %}#ffc107{% else %}#dc3545{% endif %};">
+                    <strong>Xác suất thu nhập trên 50,000 USD/năm: {{ result.probability_percent }}%</strong>
+                </p>
+                
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    
+    // Xử lý form submit
+    $('#prediction-form').on('submit', function(e) {
+        // Hiển thị loading
+        $(this).find('button[type="submit"]').prop('disabled', true).html(
+            '<i class="fas fa-spinner fa-spin"></i> Đang dự đoán...'
+        );
+    });
+    
+    // Reset form
+    $('button[type="reset"]').on('click', function() {
+        $('.result-card').fadeOut();
+        $('#prediction-form').find('button[type="submit"]').prop('disabled', false).html(
+            '<i class="fas fa-chart-line"></i> Dự đoán'
+        );
+    });
+    
+    // Thêm tooltip cho các trường input
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    
+    // Comment: Animate progress bar when result is shown
+    /*
+    {% if show_result %}
+    setTimeout(function() {
+        var progressBar = $('#progress-bar');
+        var targetWidth = '{{ result.probability_percent }}%';
+        progressBar.css('width', '0%');
+        setTimeout(function() {
+            progressBar.css('width', targetWidth);
+        }, 300);
+    }, 200);
+    {% endif %}
+    */
+});
+
+</script>
+{% endblock %}

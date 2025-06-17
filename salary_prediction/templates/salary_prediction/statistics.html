@@ -1,0 +1,217 @@
+{% extends 'salary_prediction/base.html' %}
+{% load static %}
+
+{% block title %}Thống kê dữ liệu - Dự đoán mức lương{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 1rem 0.7rem 0;
+    }
+
+    h1.text-primary {
+        color: #007bff;
+    }
+
+    .card-stat {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    h2.stat-number {
+        font-weight: bold;
+        font-size: 2.5rem;
+        margin: 0;
+    }
+
+    .section-title {
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        color: #007bff;
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-item {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .chart-item:first-child {
+        grid-column: span 2;
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .chart-item img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: auto;
+    }
+
+    .table-responsive {
+        margin-top: 2rem;
+        background: #ffffff;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+    }
+
+    .table-bordered th {
+        background-color: #e9ecef;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0069d9;
+        border-color: #0062cc;
+    }
+
+    .note-box {
+        background: #ffffff;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="text-center text-primary mb-4"><i class="fas fa-chart-bar"></i> Thống kê dữ liệu thu nhập</h1>
+
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card-stat">
+                <h5><i class="fas fa-users"></i> Tổng số mẫu</h5>
+                <h2 class="stat-number text-primary">48,842</h2>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card-stat">
+                <h5><i class="fas fa-columns"></i> Số đặc trưng</h5>
+                <h2 class="stat-number text-info">14</h2>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card-stat">
+                <h5><i class="fas fa-clock"></i> Giờ làm TB</h5>
+                <h2 class="stat-number text-warning">40 giờ</h2>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card-stat">
+                <h5><i class="fas fa-money-bill-wave"></i> Tỉ lệ >50K</h5>
+                <h2 class="stat-number text-success">23.9%</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-item">
+            <h4>Phân phối thu nhập</h4>
+            <img src="data:image/png;base64,{{ income_pie }}" alt="Phân phối thu nhập"/>
+        </div>
+        <div class="chart-item">
+            <h4>Phân phối theo giới tính</h4>
+            <img src="data:image/png;base64,{{ income_gender }}" alt="Phân phối theo giới tính"/>
+        </div>
+        <div class="chart-item">
+            <h4>Thu nhập theo giờ làm việc</h4>
+            <img src="data:image/png;base64,{{ income_hours }}" alt="Thu nhập theo giờ làm việc"/>
+        </div>
+        <div class="chart-item">
+            <h4>Thu nhập theo nhóm tuổi</h4>
+            <img src="data:image/png;base64,{{ income_age }}" alt="Thu nhập theo nhóm tuổi"/>
+        </div>
+        <div class="chart-item">
+            <h4>Thu nhập theo quốc gia</h4>
+            <img src="data:image/png;base64,{{ income_country }}" alt="Thu nhập theo quốc gia"/>
+        </div>
+    </div>
+
+    <div class="section-title">Mô tả các biến số cơ bản</div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Biến</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                    <th>Mean</th>
+                    <th>Median</th>
+                    <th>Std</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in describe_data %}
+                <tr>
+                    <td>{{ row.feature }}</td>
+                    <td>{{ row.min }}</td>
+                    <td>{{ row.max }}</td>
+                    <td>{{ row.mean }}</td>
+                    <td>{{ row.median }}</td>
+                    <td>{{ row.std }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section-title">Nhận xét quan trọng</div>
+    <div class="note-box">
+        <ul>
+            <li>Trình độ học vấn có mối tương quan mạnh với thu nhập, ảnh hưởng đến khả năng đạt mức >50K.</li>
+            <li>Phần lớn dữ liệu thuộc nhóm người có thu nhập ≤50K, cho thấy sự phân bố không đồng đều.</li>
+            <li>Người làm việc ít giờ hơn thường khó đạt thu nhập >50K.</li>
+            <li>Hoa Kỳ chiếm đa số trong tập dữ liệu với cả hai nhóm thu nhập.</li>
+            <li>Nam giới có tỷ lệ đạt thu nhập >50K cao hơn nữ giới.</li>
+        </ul>
+    </div>
+
+    <div class="text-center my-5">
+        <a href="{% url 'index' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-rocket"></i> Dự đoán ngay
+        </a>
+    </div>
+</div>
+{% endblock %}
