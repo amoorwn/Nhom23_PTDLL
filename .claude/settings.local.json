@@ -1,12 +1,1 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(django-admin startproject:*)",
-      "Bash(pip install:*)",
-      "Bash(python:*)",
-      "Bash(mkdir:*)",
-      "Bash(cp:*)"
-    ],
-    "deny": []
-  }
-}
+
